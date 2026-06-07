@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avisos de Enfermería — Cuida IA</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lila: #7C3AED;
+    --lila-claro: #A78BFA;
+    --lila-suave: #EDE9FE;
+    --lila-medio: #C4B5FD;
+    --lila-oscuro: #5B21B6;
+    --fondo: #F5F3FF;
+    --blanco: #FFFFFF;
+    --gris-texto: #374151;
+    --gris-suave: #9CA3AF;
+    --rojo-urgente: #DC2626;
+    --rojo-suave: #FEE2E2;
+    --verde-ok: #059669;
+    --verde-suave: #D1FAE5;
+    --amarillo: #D97706;
+    --amarillo-suave: #FEF3C7;
+    --sombra: 0 4px 24px rgba(124,58,237,0.10);
+    --radio: 16px;
+    --radio-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--fondo);
+    color: var(--gris-texto);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    background: linear-gradient(135deg, var(--lila-oscuro) 0%, var(--lila) 60%, var(--lila-claro) 100%);
+    padding: 28px 24px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .logo-cuida {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .logo-texto {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+  }
+  .logo-subtexto {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: white;
+    line-height: 1.2;
+    position: relative;
+    z-index: 1;
+  }
+  header p {
+    color: rgba(255,255,255,0.75);
+    font-size: 13px;
+    margin-top: 6px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── URGENCIA BANNER ─── */
+  .urgencia-banner {
+    background: var(--rojo-suave);
+    border-left: 4px solid var(--rojo-urgente);
+    margin: 16px;
+    padding: 12px 16px;
+    border-radius: var(--radio-sm);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .urgencia-banner .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .urgencia-banner p {
+    font-size: 12.5px;
+    color: #7F1D1D;
+    line-height: 1.5;
+  }
+  .urgencia-banner strong { font-weight: 700; }
+
+  /* ─── MAIN ─── */
+  main { padding: 0 16px 40px; }
+
+  /* ─── PASOS ─── */
+  .paso-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 20px 0 10px;
+  }
+  .paso-num {
+    width: 26px; height: 26px;
+    background: var(--lila);
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .paso-titulo {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--lila-oscuro);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    padding: 18px;
+    box-shadow: var(--sombra);
+    margin-bottom: 12px;
+  }
+
+  /* ─── TIPO INCIDENCIA ─── */
+  .tipos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .tipo-btn {
+    background: var(--blanco);
+    border: 2px solid var(--lila-medio);
+    border-radius: var(--radio-sm);
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .tipo-btn:hover { background: var(--lila-suave); border-color: var(--lila); }
+  .tipo-btn.activo {
+    background: var(--lila);
+    border-color: var(--lila-oscuro);
+    color: white;
+  }
+  .tipo-btn.activo .tipo-icon { filter: brightness(10); }
+  .tipo-btn.urgente { border-color: var(--rojo-urgente); }
+  .tipo-btn.urgente:hover { background: var(--rojo-suave); }
+  .tipo-btn.urgente.activo { background: var(--rojo-urgente); border-color: #991B1B; }
+  .tipo-icon { font-size: 24px; }
+  .tipo-nombre { font-size: 11.5px; font-weight: 600; line-height: 1.3; }
+  .tipo-destinatario {
+    font-size: 10px;
+    color: var(--gris-suave);
+    margin-top: 2px;
+  }
+  .tipo-btn.activo .tipo-destinatario { color: rgba(255,255,255,0.75); }
+
+  /* ─── CAMPOS ─── */
+  .campo-grupo { margin-bottom: 14px; }
+  .campo-grupo label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--lila-oscuro);
+    margin-bottom: 6px;
+  }
+  .campo-grupo label .req { color: var(--rojo-urgente); }
+  .campo-grupo input,
+  .campo-grupo select,
+  .campo-grupo textarea {
+    width: 100%;
+    border: 2px solid var(--lila-medio);
+    border-radius: var(--radio-sm);
+    padding: 11px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--gris-texto);
+    background: var(--blanco);
+    transition: border-color 0.15s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .campo-grupo input:focus,
+  .campo-grupo select:focus,
+  .campo-grupo textarea:focus {
+    border-color: var(--lila);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+  }
+  .campo-grupo textarea { resize: none; height: 90px; line-height: 1.5; }
+  .campo-grupo select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237C3AED'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 36px; }
+
+  .campo-fila { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* ─── TURNO VISUAL ─── */
+  .turno-selector { display: flex; gap: 8px; }
+  .turno-btn {
+    flex: 1;
+    padding: 10px 6px;
+    border: 2px solid var(--lila-medio);
+    border-radius: var(--radio-sm);
+    background: var(--blanco);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+  .turno-btn:hover { background: var(--lila-suave); }
+  .turno-btn.activo { background: var(--lila); border-color: var(--lila-oscuro); color: white; }
+  .turno-emoji { font-size: 16px; }
+
+  /* ─── CHECKLIST PROTOCOLO ─── */
+  .protocolo-box {
+    background: var(--lila-suave);
+    border-radius: var(--radio-sm);
+    padding: 14px;
+    margin-top: 10px;
+    display: none;
+  }
+  .protocolo-box.visible { display: block; }
+  .protocolo-titulo {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--lila-oscuro);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .chk-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  .chk-item input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--lila);
+    flex-shrink: 0;
+    margin-top: 1px;
+    cursor: pointer;
+  }
+  .chk-item span { font-size: 13px; line-height: 1.4; }
+  .chk-item.marcado span { text-decoration: line-through; color: var(--gris-suave); }
+
+  /* ─── ALERTA NOCHE ─── */
+  .alerta-noche {
+    background: #1E1B4B;
+    border-radius: var(--radio-sm);
+    padding: 12px 14px;
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .alerta-noche.visible { display: flex; }
+  .alerta-noche p { font-size: 12.5px; color: rgba(255,255,255,0.9); line-height: 1.5; }
+  .alerta-noche strong { color: var(--lila-claro); }
+
+  /* ─── BOTÓN ENVIAR ─── */
+  .btn-enviar {
+    width: 100%;
+    background: linear-gradient(135deg, var(--lila-oscuro), var(--lila));
+    color: white;
+    border: none;
+    border-radius: var(--radio);
+    padding: 18px;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    letter-spacing: 0.3px;
+    box-shadow: 0 6px 20px rgba(124,58,237,0.35);
+  }
+  .btn-enviar:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(124,58,237,0.45); }
+  .btn-enviar:active { transform: translateY(0); }
+  .btn-enviar:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* ─── PANTALLA CONFIRMACIÓN ─── */
+  #pantalla-confirmacion {
+    display: none;
+    padding: 24px 16px;
+    text-align: center;
+    animation: fadeIn 0.4s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: none; } }
+  .confirmacion-icon {
+    width: 80px; height: 80px;
+    background: var(--verde-suave);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 20px;
+  }
+  .confirmacion-icon.urgente { background: var(--rojo-suave); }
+  .confirmacion-titulo {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--lila-oscuro);
+    margin-bottom: 8px;
+  }
+  .confirmacion-sub {
+    font-size: 14px;
+    color: var(--gris-texto);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+  .resumen-registro {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    padding: 18px;
+    box-shadow: var(--sombra);
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  .resumen-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--lila-suave);
+    gap: 12px;
+  }
+  .resumen-fila:last-child { border-bottom: none; }
+  .resumen-fila .etiqueta { font-size: 11px; font-weight: 700; color: var(--gris-suave); text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; }
+  .resumen-fila .valor { font-size: 13px; font-weight: 600; color: var(--gris-texto); text-align: right; }
+  .badge-destinatario {
+    background: var(--lila-suave);
+    color: var(--lila-oscuro);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .badge-urgente { background: var(--rojo-suave); color: var(--rojo-urgente); }
+
+  .btn-nuevo {
+    width: 100%;
+    background: var(--blanco);
+    color: var(--lila);
+    border: 2px solid var(--lila);
+    border-radius: var(--radio);
+    padding: 15px;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-nuevo:hover { background: var(--lila-suave); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 11px;
+    color: var(--gris-suave);
+    line-height: 1.6;
+  }
+  footer a { color: var(--lila); text-decoration: none; }
+
+  /* ─── SPINNER ─── */
+  .spinner {
+    width: 20px; height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-cuida">
+    <div class="logo-icon">🏥</div>
+    <div>
+      <div class="logo-texto">Cuida IA</div>
+      <div class="logo-subtexto">Sistema de Agentes Geriátricos</div>
+    </div>
+  </div>
+  <h1>Avisos de Enfermería</h1>
+  <p>Registra la incidencia ahora. Llega al instante a quien corresponde.</p>
+</header>
+
+<!-- FORMULARIO PRINCIPAL -->
+<div id="pantalla-formulario">
+
+  <!-- BANNER URGENCIA -->
+  <div class="urgencia-banner">
+    <span class="icon">⚠️</span>
+    <p><strong>Urgencia vital:</strong> Si el residente no responde, tiene dificultad grave para respirar o pérdida de consciencia — llama al <strong>112 primero</strong>, luego registra aquí.</p>
+  </div>
+
+  <main>
+
+    <!-- PASO 1: TIPO -->
+    <div class="paso-label">
+      <div class="paso-num">1</div>
+      <span class="paso-titulo">¿Qué ha pasado?</span>
+    </div>
+    <div class="tipos-grid">
+      <button class="tipo-btn urgente" onclick="seleccionarTipo('caida', this)" id="btn-caida">
+        <span class="tipo-icon">🤕</span>
+        <span class="tipo-nombre">Caída o golpe</span>
+        <span class="tipo-destinatario">→ Enfermería</span>
+      </button>
+      <button class="tipo-btn urgente" onclick="seleccionarTipo('salud', this)" id="btn-salud">
+        <span class="tipo-icon">🌡️</span>
+        <span class="tipo-nombre">Alteración de salud</span>
+        <span class="tipo-destinatario">→ Enfermería</span>
+      </button>
+      <button class="tipo-btn" onclick="seleccionarTipo('agitacion', this)" id="btn-agitacion">
+        <span class="tipo-icon">🧠</span>
+        <span class="tipo-nombre">Agitación / agresión</span>
+        <span class="tipo-destinatario">→ Psicología / Enfermería</span>
+      </button>
+      <button class="tipo-btn urgente" onclick="seleccionarTipo('medicacion', this)" id="btn-medicacion">
+        <span class="tipo-icon">💊</span>
+        <span class="tipo-nombre">Problema medicación</span>
+        <span class="tipo-destinatario">→ Enfermería</span>
+      </button>
+      <button class="tipo-btn" onclick="seleccionarTipo('material', this)" id="btn-material">
+        <span class="tipo-icon">📦</span>
+        <span class="tipo-nombre">Falta de material</span>
+        <span class="tipo-destinatario">→ Coordinadora</span>
+      </button>
+      <button class="tipo-btn" onclick="seleccionarTipo('otro', this)" id="btn-otro">
+        <span class="tipo-icon">📋</span>
+        <span class="tipo-nombre">Otra incidencia</span>
+        <span class="tipo-destinatario">→ Según tipo</span>
+      </button>
+    </div>
+
+    <!-- PASO 2: DATOS BÁSICOS -->
+    <div class="paso-label">
+      <div class="paso-num">2</div>
+      <span class="paso-titulo">Residente y ubicación</span>
+    </div>
+    <div class="card">
+      <div class="campo-grupo">
+        <label>Nombre del residente <span class="req">*</span></label>
+        <input type="text" id="residente" placeholder="Nombre y apellidos" autocomplete="off">
+      </div>
+      <div class="campo-fila">
+        <div class="campo-grupo">
+          <label>Planta / módulo <span class="req">*</span></label>
+          <select id="planta">
+            <option value="">Selecciona...</option>
+            <option>Psicogeriatría</option>
+            <option>Planta 1ª</option>
+            <option>Planta 2ª</option>
+            <option>Planta principal</option>
+            <option>Otra</option>
+          </select>
+        </div>
+        <div class="campo-grupo">
+          <label>Hora de la incidencia <span class="req">*</span></label>
+          <input type="time" id="hora-incidencia">
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 3: TURNO -->
+    <div class="paso-label">
+      <div class="paso-num">3</div>
+      <span class="paso-titulo">Turno actual</span>
+    </div>
+    <div class="card">
+      <div class="turno-selector">
+        <button class="turno-btn" onclick="seleccionarTurno('mañana', this)">
+          <span class="turno-emoji">☀️</span>Mañana
+        </button>
+        <button class="turno-btn" onclick="seleccionarTurno('tarde', this)">
+          <span class="turno-emoji">🌅</span>Tarde
+        </button>
+        <button class="turno-btn" onclick="seleccionarTurno('noche', this)">
+          <span class="turno-emoji">🌙</span>Noche
+        </button>
+      </div>
+      <div class="alerta-noche" id="alerta-noche">
+        <span style="font-size:18px;flex-shrink:0">🌙</span>
+        <p><strong>Turno de noche:</strong> No hay cobertura de psicología ni coordinadora. Todos los avisos van directamente a <strong>enfermería</strong>, que decidirá cómo actuar. Queda registrado que no había personal de apoyo disponible.</p>
+      </div>
+    </div>
+
+    <!-- PASO 4: PROTOCOLO / DESCRIPCIÓN -->
+    <div class="paso-label">
+      <div class="paso-num">4</div>
+      <span class="paso-titulo">Protocolo y descripción</span>
+    </div>
+    <div class="card">
+      <!-- PROTOCOLO CAÍDA -->
+      <div class="protocolo-box" id="proto-caida">
+        <div class="protocolo-titulo">📋 Checklist caída</div>
+        <label class="chk-item" onclick="marcarChk(this)"><input type="checkbox"> <span>¿Ha podido levantarse solo/a?</span></label>
+        <label class="chk-item" onclick="marcarChk(this)"><input type="checkbox"> <span>¿Hay signos visibles de herida, hematoma o deformidad?</span></label>
+        <label class="chk-item" onclick="marcarChk(this)"><input type="checkbox"> <span>¿Se queja de dolor en algún lugar concreto?</span></label>
+        <label class="chk-item" onclick="marcarChk(this)"><input type="checkbox"> <span>¿Hubo testigos? (indica quién en la descripción)</span></label>
+        <label class="chk-item" onclick="marcarChk(this)"><input type="checkbox"> <span>¿Ya se ha avisado a enfermería verbalmente?</span></label>
+      </div>
+      <!-- PROTOCOLO AGITACIÓN -->
+      <div class="protocolo-box" id="proto-agitacion">
+        <div class="protocolo-titulo">📋 Checklist agitación</div>
+        <label class="chk-item" onclick="marcarChk(this)"><input type="checkbox"> <span>¿Ha habido agresión a personas? (indica a quién)</span></label>
+        <label class="chk-item" onclick="marcarChk(this)"><input type="checkbox"> <span>¿Tiene medicación pautada para esto?</span></label>
+        <label class="chk-item" onclick="marcarChk(this)"><input type="checkbox"> <span>¿Se ha podido calmar con re-encuadre verbal?</span></label>
+        <label class="chk-item" onclick="marcarChk(this)"><input type="checkbox"> <span>¿Hay otros residentes en riesgo en la misma zona?</span></label>
+      </div>
+      <!-- PROTOCOLO MEDICACIÓN -->
+      <div class="protocolo-box" id="proto-medicacion">
+        <div class="protocolo-titulo">📋 Checklist medicación</div>
+        <label class="chk-item" onclick="marcarChk(this)"><input type="checkbox"> <span>¿El residente rechaza tomar la medicación?</span></label>
+        <label class="chk-item" onclick="marcarChk(this)"><input type="checkbox"> <span>¿Ha tenido reacción tras tomarla (náuseas, mareo…)?</span></label>
+        <label class="chk-item" onclick="marcarChk(this)"><input type="checkbox"> <span>¿Ha habido un posible error de dosis o medicamento?</span></label>
+      </div>
+
+      <div class="campo-grupo" style="margin-top:10px">
+        <label>Descripción de lo ocurrido <span class="req">*</span></label>
+        <textarea id="descripcion" placeholder="Describe lo que has observado con el mayor detalle posible. Cuanto más información, mejor protección para ti y para el residente."></textarea>
+      </div>
+
+      <div class="campo-grupo">
+        <label>Tu nombre (auxiliar) <span class="req">*</span></label>
+        <input type="text" id="auxiliar" placeholder="Nombre completo" autocomplete="name">
+      </div>
+    </div>
+
+    <button class="btn-enviar" id="btn-enviar" onclick="enviarAviso()">
+      <span id="btn-texto">📤 Registrar y enviar aviso</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+
+  </main>
+
+  <footer>
+    <strong>Cuida IA</strong> · Sistema de 13 agentes para residencias geriátricas<br>
+    Desarrollado por Mari Carmen Zamora · Reg. Safe Creative 2603144929084<br>
+    <a href="https://mczs1920-source.github.io/CUIDA-IA/">mczs1920-source.github.io/CUIDA-IA</a>
+  </footer>
+</div>
+
+<!-- PANTALLA CONFIRMACIÓN -->
+<div id="pantalla-confirmacion">
+  <div class="confirmacion-icon" id="conf-icon">✅</div>
+  <div class="confirmacion-titulo">¡Aviso registrado!</div>
+  <div class="confirmacion-sub" id="conf-sub">El registro ha quedado guardado y el aviso ha sido enviado al equipo correspondiente.</div>
+
+  <div class="resumen-registro" id="resumen-registro"></div>
+
+  <button class="btn-enviar" onclick="nuevoAviso()" style="margin-bottom:12px">
+    📋 Registrar otra incidencia
+  </button>
+  <button class="btn-nuevo" onclick="verRegistros()">
+    📊 Ver todos los registros del turno
+  </button>
+
+  <footer style="margin-top:20px">
+    <strong>Cuida IA</strong> · Sistema de 13 agentes para residencias geriátricas<br>
+    Desarrollado por Mari Carmen Zamora · Reg. Safe Creative 2603144929084
+  </footer>
+</div>
+
+<script>
+  // ─── ESTADO ───
+  let tipoSeleccionado = null;
+  let turnoSeleccionado = null;
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwDdSqhbsr7lh1rY0Oa0ASkPd8hNGd6p9xuzwUwwyeN3PEk3Yb_Q4GXtMszuZw9k_8/exec';
+
+  // Poner hora actual por defecto
+  window.addEventListener('load', () => {
+    const ahora = new Date();
+    const hh = String(ahora.getHours()).padStart(2,'0');
+    const mm = String(ahora.getMinutes()).padStart(2,'0');
+    document.getElementById('hora-incidencia').value = `${hh}:${mm}`;
+    detectarTurnoAutomatico(ahora.getHours());
+  });
+
+  function detectarTurnoAutomatico(hora) {
+    let turno;
+    if (hora >= 7 && hora < 15) turno = 'mañana';
+    else if (hora >= 15 && hora < 22) turno = 'tarde';
+    else turno = 'noche';
+    const btns = document.querySelectorAll('.turno-btn');
+    btns.forEach(b => {
+      if (b.textContent.toLowerCase().includes(turno.replace('ñ','ñ'))) {
+        b.classList.add('activo');
+        turnoSeleccionado = turno;
+      }
+    });
+    if (turno === 'noche') document.getElementById('alerta-noche').classList.add('visible');
+  }
+
+  function seleccionarTipo(tipo, btn) {
+    // Resetear
+    document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('activo'));
+    document.querySelectorAll('.protocolo-box').forEach(p => p.classList.remove('visible'));
+    btn.classList.add('activo');
+    tipoSeleccionado = tipo;
+    // Mostrar protocolo si existe
+    const proto = document.getElementById(`proto-${tipo}`);
+    if (proto) proto.classList.add('visible');
+    // Actualizar placeholder descripción
+    const placeholders = {
+      caida: 'Indica dónde ocurrió (habitación, pasillo, baño...), cómo encontraste al residente, si hubo testigos y cómo está ahora.',
+      salud: 'Describe el síntoma o cambio que observas: fiebre, vómito, color, respiración, nivel de consciencia...',
+      agitacion: 'Describe la conducta, si ha habido agresión, a quién, qué ha hecho para intentar calmarlo/a.',
+      medicacion: 'Indica qué medicación, si la rechaza, si ha habido error o reacción adversa.',
+      material: 'Indica qué material falta, cuánto queda y si afecta a algún residente ahora mismo.',
+      otro: 'Describe la situación con el mayor detalle posible.'
+    };
+    document.getElementById('descripcion').placeholder = placeholders[tipo] || 'Describe lo ocurrido.';
+  }
+
+  function seleccionarTurno(turno, btn) {
+    document.querySelectorAll('.turno-btn').forEach(b => b.classList.remove('activo'));
+    btn.classList.add('activo');
+    turnoSeleccionado = turno;
+    const alerta = document.getElementById('alerta-noche');
+    turno === 'noche' ? alerta.classList.add('visible') : alerta.classList.remove('visible');
+  }
+
+  function marcarChk(label) {
+    setTimeout(() => {
+      label.classList.toggle('marcado', label.querySelector('input').checked);
+    }, 10);
+  }
+
+  // ─── CALCULAR DESTINATARIO ───
+  function calcularDestinatario() {
+    const esFinDeSemana = [0, 6].includes(new Date().getDay());
+    const esNoche = turnoSeleccionado === 'noche';
+    const mapa = {
+      caida: 'Enfermería 🏥',
+      salud: 'Enfermería 🏥',
+      medicacion: 'Enfermería 🏥',
+      agitacion: (esFinDeSemana || esNoche) ? 'Enfermería 🏥 (psicología no disponible)' : 'Psicología 🧠',
+      material: esNoche ? 'Enfermería 🏥 (coordinadora no disponible)' : 'Coordinadora 📋',
+      otro: 'Enfermería 🏥'
+    };
+    return mapa[tipoSeleccionado] || 'Enfermería 🏥';
+  }
+
+  // ─── VALIDAR ───
+  function validar() {
+    if (!tipoSeleccionado) { alert('Por favor, selecciona el tipo de incidencia.'); return false; }
+    if (!turnoSeleccionado) { alert('Por favor, selecciona el turno.'); return false; }
+    if (!document.getElementById('residente').value.trim()) { alert('Indica el nombre del residente.'); return false; }
+    if (!document.getElementById('planta').value) { alert('Selecciona la planta o módulo.'); return false; }
+    if (!document.getElementById('descripcion').value.trim()) { alert('Describe lo que ha pasado.'); return false; }
+    if (!document.getElementById('auxiliar').value.trim()) { alert('Indica tu nombre.'); return false; }
+    return true;
+  }
+
+  // ─── ENVIAR ───
+  async function enviarAviso() {
+    if (!validar()) return;
+
+    const btn = document.getElementById('btn-enviar');
+    const texto = document.getElementById('btn-texto');
+    const spinner = document.getElementById('spinner');
+    btn.disabled = true;
+    texto.style.display = 'none';
+    spinner.style.display = 'block';
+
+    const ahora = new Date();
+    const datos = {
+      timestamp: ahora.toLocaleString('es-ES'),
+      tipo: tipoSeleccionado,
+      residente: document.getElementById('residente').value.trim(),
+      planta: document.getElementById('planta').value,
+      hora_incidencia: document.getElementById('hora-incidencia').value,
+      turno: turnoSeleccionado,
+      descripcion: document.getElementById('descripcion').value.trim(),
+      auxiliar: document.getElementById('auxiliar').value.trim(),
+      destinatario: calcularDestinatario(),
+      dia_semana: ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'][ahora.getDay()]
+    };
+
+    // Enviar a Google Sheets (si está configurado)
+    if (SHEET_URL && SHEET_URL !== 'TU_APPS_SCRIPT_URL_AQUI') {
+      try {
+        const params = new URLSearchParams(datos);
+        await fetch(`${SHEET_URL}?${params.toString()}`);
+      } catch(e) {
+        console.log('Sheet no configurado aún');
+      }
+    }
+
+    // Simular pequeño delay
+    await new Promise(r => setTimeout(r, 900));
+
+    mostrarConfirmacion(datos);
+  }
+
+  // ─── CONFIRMACIÓN ───
+  function mostrarConfirmacion(datos) {
+    document.getElementById('pantalla-formulario').style.display = 'none';
+    const conf = document.getElementById('pantalla-confirmacion');
+    conf.style.display = 'block';
+
+    const esUrgente = ['caida','salud','medicacion'].includes(datos.tipo);
+    const icon = document.getElementById('conf-icon');
+    icon.textContent = esUrgente ? '🚨' : '✅';
+    if (esUrgente) icon.classList.add('urgente');
+
+    document.getElementById('conf-sub').textContent =
+      `Registrado el ${datos.timestamp}. El aviso ha sido enviado a: ${datos.destinatario}`;
+
+    const etiquetasTipo = {
+      caida:'Caída o golpe', salud:'Alteración de salud', agitacion:'Agitación / agresión',
+      medicacion:'Problema con medicación', material:'Falta de material', otro:'Otra incidencia'
+    };
+
+    document.getElementById('resumen-registro').innerHTML = `
+      <div class="resumen-fila">
+        <span class="etiqueta">Incidencia</span>
+        <span class="valor">${etiquetasTipo[datos.tipo]}</span>
+      </div>
+      <div class="resumen-fila">
+        <span class="etiqueta">Residente</span>
+        <span class="valor">${datos.residente}</span>
+      </div>
+      <div class="resumen-fila">
+        <span class="etiqueta">Planta</span>
+        <span class="valor">${datos.planta}</span>
+      </div>
+      <div class="resumen-fila">
+        <span class="etiqueta">Hora incidencia</span>
+        <span class="valor">${datos.hora_incidencia}</span>
+      </div>
+      <div class="resumen-fila">
+        <span class="etiqueta">Turno</span>
+        <span class="valor">${datos.turno}</span>
+      </div>
+      <div class="resumen-fila">
+        <span class="etiqueta">Aviso enviado a</span>
+        <span class="valor"><span class="badge-destinatario ${esUrgente ? 'badge-urgente':''}">${datos.destinatario}</span></span>
+      </div>
+      <div class="resumen-fila">
+        <span class="etiqueta">Registrado por</span>
+        <span class="valor">${datos.auxiliar}</span>
+      </div>
+    `;
+  }
+
+  function nuevoAviso() {
+    document.getElementById('pantalla-confirmacion').style.display = 'none';
+    document.getElementById('pantalla-formulario').style.display = 'block';
+    // Reset
+    document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('activo'));
+    document.querySelectorAll('.protocolo-box').forEach(p => p.classList.remove('visible'));
+    document.querySelectorAll('.chk-item').forEach(c => { c.classList.remove('marcado'); c.querySelector('input').checked = false; });
+    document.getElementById('residente').value = '';
+    document.getElementById('descripcion').value = '';
+    tipoSeleccionado = null;
+    const btn = document.getElementById('btn-enviar');
+    btn.disabled = false;
+    document.getElementById('btn-texto').style.display = 'inline';
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('conf-icon').classList.remove('urgente');
+    window.scrollTo(0,0);
+  }
+
+  function verRegistros() {
+    alert('Esta función conecta con el Google Sheets de la residencia. Configura la URL del Apps Script para activarla.');
+  }
+</script>
+</body>
+</html>
